@@ -16,6 +16,20 @@ typedef struct ReqLogin
 	char achPWD[20];
 } ReqLogin;
 
+
+void checkLogin(SOCKET hSOCKET)
+{
+	while(1)
+	{
+		if(recvLoginPacket(hSOCKET)==0)
+			break;
+	}
+
+
+}
+//checkLogin(Socket) 함수는 클라이언트로부터
+// 로그인 패킷을 계속해서 수신하고, 정상적으로 로그인 요청이 처리되면 루프를 종료하는 역할을 합니다.
+
 int recvLoginPacket(SOCKET hSOCKET)
 {
 	char message[BUFSIZE];
