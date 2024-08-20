@@ -8,13 +8,65 @@
 #define C2S_REQ_LOGIN  1001 // 로그인 요청 , 수신 코드
 #define S2C_RES_LOGIN  2001 
 #define CHAT_ROOMS  6
+//채팅방의 최대 개수를 나타냅니다.
 #define NAMESIZE 20
+
 
 typedef struct ReqLogin
 {
 	char achID[20];
 	char achPWD[20];
 } ReqLogin;
+
+typedef struct ChatClinets
+{
+	int clntNumber;
+	//채팅방에 포함된 클라이언트의 수를 추적하는 데 사용됩니다.
+	SOCKET clnSocks[10];
+	//채팅방에 속한 클라이언트 소켓들을 저장합니다.
+//이 배열에는 채팅방에 접속한 클라이언트들과의 연결이 저장됩니다.
+
+} ChatUsers;
+
+
+
+int clnCnt=0;
+//현재 접속한 클라이언트의 수를 나타냅니다.
+SOCKET clntSocks[10];
+//이 배열은 최대 10개의 클라이언트 소켓을 저장할 수 있으며, 각각의 인덱스는 특정 클라이언트와의 연결을 나타냅니다. 
+// 즉, 현재 연결된 클라이언트의 소켓들을 저장하는 데 사용됩니다.
+ChatUsers chatUsers[CHAT_ROOMS];
+//여러 개의 채팅방을 관리하기 위한 구조체 또는 클래스
+//ChatUsers 객체는 특정 채팅방에 있는 사용자들을 관리하기 위해 사용
+
+HANDLE hMutex;
+//뮤텍스를 사용하면 한 스레드가 자원을 사용하는 동안 다른 스레드가 이 자원에 접근하지 못하게 할 수 있습니다.
+
+
+
+
+DWORD WINAPI ClientConn(void *arg)
+{
+	SOCKET clnt_sock=(SOCKET)arg;
+	int str_len=0,i,room,flag;
+	char message[BUFSIZE];
+
+	while((str_len=recv(clnt_sock,message,BUFSIZE,0))!=EOF)
+		SendMSG(clnt_sock,message,str_len);
+
+	WaitForSingleObject(hMutex,INFINITE);
+	for(room=0;room<6;++room)
+	{
+		flag=0;
+		for(i=0;i<chatUsers[room].clntNumber;i++)
+		{
+			int clntNumber;
+			
+
+		}
+
+	}
+}
 
 
 void checkLogin(SOCKET hSOCKET)
@@ -24,8 +76,6 @@ void checkLogin(SOCKET hSOCKET)
 		if(recvLoginPacket(hSOCKET)==0)
 			break;
 	}
-
-
 }
 //checkLogin(Socket) 함수는 클라이언트로부터
 // 로그인 패킷을 계속해서 수신하고, 정상적으로 로그인 요청이 처리되면 루프를 종료하는 역할을 합니다.
