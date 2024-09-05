@@ -318,3 +318,29 @@ int trxLogin(SOCKET hSocket,char *buf){
 	
 	return res.iResult; // 로그인 결과를 반환합니다.
 }
+//이 함수는 클라이언트의 로그인 요청을 실제로 처리하는 함수입니다.
+
+
+void chatRoomInfo(SOCKET hSocket)
+{
+	char buffer[BUFSIZE];
+	//buffer라는 문자 배열을 선언하여 서버와 클라이언트 간에 데이터를 전송하는 데 사용됩니다.
+	char *tableLine ="===========================\n";
+	// tableLine은 출력 형식에서 채팅방 정보를 구분하는 데 사용되는 문자열입니다.
+
+	sprintf(buffer,"%s| 채팅방1 : %d/2\t | 채팅방2: %d/2\t | 채팅방3 : %d/2\t |\%s",tableLine,chatUsers[0].clntNumber,chatUsers[1].clntNumber,chatUsers[2].clntNumber,tableLine);
+	//sprintf 사용: sprintf 함수는 buffer에 문자열을 포맷하여 저장합니다.
+	//여기서 tableLine과 채팅방의 사용자 수(chatUsers[x].clntNumber)를 포함하여 출력 형식을 만듭니다.
+	send(hSocket,buffer,strlen(buffer),0);
+	//send 함수 호출: send 함수는 hSocket을 통해 buffer에 저장된 데이터를 클라이언트에게 전송합니다. 
+	//strlen(buffer)는 전송할 데이터의 길이를 계산합니다. 
+	//0은 전송 플래그를 나타내며, 기본적인 전송을 의미합니다.
+	
+	sprintf(buffer,"%s| 채팅방4 : %d/2\t | 채팅방5: %d/2\t | 채팅방6 : %d/2\t |\%s",tableLine,chatUsers[0].clntNumber,chatUsers[4].clntNumber,chatUsers[5].clntNumber,tableLine);
+	send(hSocket,buffer,strlen(buffer),0);
+
+}
+//이 코드는 클라이언트에게 현재 채팅방의 상태 정보를 보내는 기능을 수행합니다.
+//chatRoomInfo 함수는 두 개의 메시지를 생성하여 각 채팅방의 사용자 수를 포함하고, 
+//이 정보를 소켓을 통해 클라이언트에 전송합니다
+// 메시지는 채팅방의 사용자 수와 최대 수를 포맷하여 문자열로 만들고, 이를 클라이언트에게 전송합니다.
