@@ -365,3 +365,22 @@ void initMutex()
 
 //뮤텍스(Mutex)는 멀티스레드 환경에서 여러 스레드가 동시에 공유 자원에 접근하는 것을 막기 위해 사용되는 도구
 //쉽게 말해, 여러 사람이 동시에 한 자원을 사용하려고 할 때, 순서를 정해 하나씩 사용하도록 하는 잠금 장치
+
+void windllLoad(WSADATA *wsaData)
+{
+//WSADATA 구조체는 WSAStartup 함수가 실행될 때 초기화 결과를 반환하는 데 사용됩니다. 
+//WSADATA 구조체 포인터를 인자로 받는 함수입니다. 이 구조체는 Windows 소켓 API의
+// 초기화 과정에서 소켓의 버전 정보와 같은 초기화 결과를 저장하는 역할을 합니다.
+
+
+	if(WSAStartup(MAKEWORD(2,2),wsaData)!=0)
+		ErrorHandling("WSAStartup");
+
+		//WSAStartup 함수는 Windows에서 소켓 라이브러리를 초기화하는 함수로, 
+		//소켓 프로그래밍을 시작하기 전에 반드시 호출해야 합니다.
+		//WSAStartup 함수는 Windows에서 소켓 라이브러리를 초기화하는 함수로, 
+		//소켓 프로그래밍을 시작하기 전에 반드시 호출해야 합니다.
+	//초기화가 성공적으로 완료된 후에는 WSACleanup 함수를 호출하여 
+	//소켓 라이브러리를 해제해야 합니다
+}
+//이 코드는 Windows 소켓 프로그래밍에서 네트워크 통신을 시작하기 위해 WSAStartup 함수를 호출하는 C 언어 함수입니다.
