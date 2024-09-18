@@ -215,8 +215,8 @@ void SendMSG(SOCKET clnt_sock,char *message,int len)
     
 
     
-    for(i=0;i,chatUsers[room].clntNumber;++i)
-        send(chatUsers[room].clntSocks[i],message,len,0)
+    for(i=0;i<chatUsers[room].clntNumber;++i)
+        send(chatUsers[room].clntSocks[i],message,len,0);
     
     //해당 방에 있는 모든 클라이언트 소켓에 메시지를 전송합니다.
     ReleaseMutex(hMutex);
@@ -384,3 +384,53 @@ void windllLoad(WSADATA *wsaData)
 	//소켓 라이브러리를 해제해야 합니다
 }
 //이 코드는 Windows 소켓 프로그래밍에서 네트워크 통신을 시작하기 위해 WSAStartup 함수를 호출하는 C 언어 함수입니다.
+//Winsock(Windows Sockets) 라이브러리는 Windows 운영 체제에서 네트워크 프로그래밍을 위해 소켓을 사용하여 TCP/IP 통신을 할 수 있게 해주는 API입니다.
+
+
+//이 함수는 TCP 통신을 위해 서버 소켓을 생성
+//서버 소켓과 서버의 주소 구조체를 초기화하고,
+//, 주어진 포트 번호로 서버 소켓을 설정합니다.
+//서버 소켓을 생성한 후, 그 소켓을 바인딩할 IP 주소와 포트 번호를 설정하는 과정입니다.
+//socket() 함수로 소켓을 생성하고, 주소 체계(AF_INET), IP 주소(INADDR_ANY), 포트 번호를 설정한 후
+// 서버가 클라이언트의 요청을 수락할 준비를 합니다.
+void ServInit(SOCKET *serv_sock,SOCKADDR_IN *serv_addr,int port){
+
+	*serv_sock=socket(PF_INET, SOCK_STREAM, 0);
+	//이 부분은 소켓을 생성하는 코드입니다 //, SOCK_STREAM은 TCP 통신을 의미합니다.
+	//PF_INET은 IPv4 프로토콜을 사용하고, 
+	//socket() 함수는 소켓을 생성한 후, 그 값을 포인터 serv_sock에 저장합니다.
+	if(*serv_sock==INVALID_SOCKET)
+			ErrorHandling("socket() ERROR!");
+	//만약 소켓 생성에 실패하면, INVALID_SOCKET 값을 반환합니다.
+	//ErrorHandling("socket() ERROR!");을 호출하여 에러 메시지를 출력하고, 
+	//적절한 오류 처리를 수행합니다.
+	serv_addr->sin_family=AF_INET;
+	// sin_family 필드는 주소 체계(address family)를 나타내며, AF_INET은 IPv4 주소 체계를 의미합니다.
+	serv_addr->sin_addr.s_addr=hotel(INADDR_ANY);
+	//서버의 IP 주소를 설정하는 부분입니다.
+	//INADDR_ANY는 "모든 IP 주소"를 의미하며, 
+	//htonl()은 호스트 바이트 순서를 네트워크 바이트 순서로 변환하는 함수입니다.
+	//즉, 서버가 여러 개의 IP 주소를 가질 경우, 이 설정은 모든 네트워크 인터페이스에서 요청을 받을 수 있도록 합니다.
+	serv_addr->sin_port=htons((unsigned short int)port);
+	//서버 소켓이 사용할 포트 번호를 설정하는 부분입니다.
+
+	//serv_addr는 SOCKADDR_IN 구조체의 포인터로, 
+	//서버의 주소 정보를 담고 있습니다.
+}
+
+//오류 메시지를 출력하고 프로그램을 종료하는 역할을 합니다. 
+//ErrorHandling 함수의 각 부분을 살펴보면 다음과 같습니다:
+
+void ErrorHandling(char *message){
+
+	//메시지 즉석 출력 가능 
+	fputs(message,stderr);
+	// 표준 오류 출력(스트림)인 stderr로 출력합니다.
+	// stderr는 에러 메시지나 디버그 메시지를 출력할 때 사용하는 표준 출력 스트림입니다. 
+	// 이를 통해 오류 메시지가 콘솔에 출력됩니다.
+	fputs('\n',stderr);
+	//fputc() 함수는 단일 문자를 출력하는 함수입니다.
+	exit(-1);
+	//exit() 함수는 프로그램을 종료하는 함수입니다.
+
+}
